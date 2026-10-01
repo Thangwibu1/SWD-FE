@@ -1,0 +1,29 @@
+name: frontend-ci
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.19.0
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build
+      - name: Playwright (mock API via page.route)
+        run: |
+          if ls e2e/*.spec.ts >/dev/null 2>&1; then
+            npx playwright install --with-deps chromium
+            npm run test:e2e
+          else
+            echo "No e2e specs yet"
+          fi
+      - run: docker build -t architecture-evaluation-frontend:ci .
