@@ -1,32 +1,45 @@
-import { createBrowserRouter, createMemoryRouter } from 'react-router-dom';
-import type { RouteObject } from 'react-router-dom';
-import { AppLayout } from '../components/layout/AppLayout';
-import { PlaceholderPage } from '../pages/PlaceholderPage';
+import { createBrowserRouter } from 'react-router-dom';
+import { Layout } from '../components/Layout.js';
+import { PlaceholderPage } from '../pages/PlaceholderPage.js';
+import { DashboardPage } from '../pages/DashboardPage.js';
+import { ArchitecturesPage } from '../pages/ArchitecturesPage.js';
+import { NewExperimentPage } from '../pages/NewExperimentPage.js';
+import { ExperimentsPage } from '../pages/ExperimentsPage.js';
+import { ExperimentDetailPage } from '../pages/ExperimentDetailPage.js';
 
-// Phase 0 scaffold: real pages replace placeholders in Phase 9.
-export const NAV_ITEMS = [
-  { path: '/', label: 'Dashboard' },
-  { path: '/experiments/new', label: 'New Experiment' },
-  { path: '/experiments', label: 'Experiments' },
-  { path: '/comparison', label: 'Comparison' },
-  { path: '/architectures', label: 'Architectures' },
-  { path: '/settings', label: 'Settings' },
-] as const;
-
-const routes: RouteObject[] = [
+export const router = createBrowserRouter([
   {
     path: '/',
-    element: <AppLayout />,
-    children: NAV_ITEMS.map((item) => ({
-      ...(item.path === '/' ? { index: true } : { path: item.path.slice(1) }),
-      element: <PlaceholderPage title={item.label} />,
-    })),
+    element: <Layout />,
+    children: [
+      {
+        index: true,
+        element: <DashboardPage />,
+      },
+      {
+        path: 'experiments/new',
+        element: <NewExperimentPage />,
+      },
+      {
+        path: 'experiments',
+        element: <ExperimentsPage />,
+      },
+      {
+        path: 'experiments/:id',
+        element: <ExperimentDetailPage />,
+      },
+      {
+        path: 'compare',
+        element: <PlaceholderPage title="Compare Architectures" />,
+      },
+      {
+        path: 'architectures',
+        element: <ArchitecturesPage />,
+      },
+      {
+        path: 'settings',
+        element: <PlaceholderPage title="Settings" />,
+      },
+    ],
   },
-];
-
-/** Memory router when an initial path is given (tests), browser router otherwise. */
-export function createAppRouter(initialPath?: string) {
-  return initialPath
-    ? createMemoryRouter(routes, { initialEntries: [initialPath] })
-    : createBrowserRouter(routes);
-}
+]);

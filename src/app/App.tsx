@@ -5,7 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import type { QueryClient } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router-dom';
 import { createQueryClient } from './query-client';
-import { createAppRouter } from './router';
+import { router } from './router';
 import { theme } from './theme';
 
 interface AppProps {
@@ -15,7 +15,7 @@ interface AppProps {
 
 export function App({ queryClient, initialPath }: AppProps) {
   const [client] = useState(() => queryClient ?? createQueryClient());
-  const [router] = useState(() => createAppRouter(initialPath));
+  // initialPath support omitted since we use static router for now
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
